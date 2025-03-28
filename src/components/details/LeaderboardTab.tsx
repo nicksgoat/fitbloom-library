@@ -1,12 +1,12 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Trophy } from 'lucide-react';
 
 // Types for metrics and records
-type MetricType = 'Weight' | 'Reps' | 'Sets' | 'Time' | 'Distance' | 'Calories';
+type MetricType = 'Weight' | 'Reps' | 'Sets' | 'Time' | 'Distance' | 'Calories' | 'Completion';
 type LeaderboardRecord = {
   id: number;
   rank: number;
@@ -33,27 +33,34 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
           itemTitle.toLowerCase().includes('lift') || 
           itemTitle.toLowerCase().includes('curl') ||
           itemTitle.toLowerCase().includes('squat')) {
-        return ['Weight', 'Reps', 'Sets'];
+        return ['Weight', 'Reps', 'Sets'] as MetricType[];
       } else if (itemTitle.toLowerCase().includes('run') || 
                 itemTitle.toLowerCase().includes('sprint') || 
                 itemTitle.toLowerCase().includes('jog')) {
-        return ['Distance', 'Time', 'Calories'];
+        return ['Distance', 'Time', 'Calories'] as MetricType[];
       } else if (itemTitle.toLowerCase().includes('plank') || 
                 itemTitle.toLowerCase().includes('hold')) {
-        return ['Time', 'Sets'];
+        return ['Time', 'Sets'] as MetricType[];
       } else {
-        return ['Reps', 'Sets', 'Weight'];
+        return ['Reps', 'Sets', 'Weight'] as MetricType[];
       }
     } else if (itemType === 'workout') {
-      return ['Time', 'Calories', 'Reps'];
+      return ['Time', 'Calories', 'Reps'] as MetricType[];
     } else {
       // Program
-      return ['Calories', 'Time', 'Completion'];
+      return ['Calories', 'Time', 'Completion'] as MetricType[];
     }
   }, [itemTitle, itemType]);
   
-  const [activeMetric, setActiveMetric] = useState<MetricType>(relevantMetrics[0]);
+  const [activeMetric, setActiveMetric] = useState<MetricType>('Weight');
   
+  // Set the first relevant metric as active when the component mounts or when relevantMetrics changes
+  useEffect(() => {
+    if (relevantMetrics.length > 0) {
+      setActiveMetric(relevantMetrics[0]);
+    }
+  }, [relevantMetrics]);
+
   // Sample leaderboard data based on metrics
   const leaderboardData: Record<MetricType, LeaderboardRecord[]> = {
     'Weight': [
@@ -86,6 +93,11 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
       { id: 2, rank: 2, user: { name: 'CalorieKiller' }, value: '875', unit: 'kcal', change: -1 },
       { id: 3, rank: 3, user: { name: 'FatBurner' }, value: '820', unit: 'kcal', change: 0 },
     ],
+    'Completion': [
+      { id: 1, rank: 1, user: { name: 'DedicatedUser' }, value: '100', unit: '%', change: 0 },
+      { id: 2, rank: 2, user: { name: 'ConsistentOne' }, value: '95', unit: '%', change: 1 },
+      { id: 3, rank: 3, user: { name: 'RegularAthlete' }, value: '90', unit: '%', change: -1 },
+    ],
   };
 
   return (
@@ -101,7 +113,7 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
             key={metric}
             variant={activeMetric === metric ? "default" : "outline"}
             className={`cursor-pointer ${activeMetric === metric ? 'bg-fitbloom-purple' : ''}`}
-            onClick={() => setActiveMetric(metric as MetricType)}
+            onClick={() => setActiveMetric(metric)}
           >
             {metric}
           </Badge>
@@ -118,7 +130,7 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {leaderboardData[activeMetric].map((record) => (
+            {leaderboardData[activeMetric]?.map((record) => (
               <TableRow key={record.id} className="border-gray-800">
                 <TableCell className="text-center">
                   {record.rank === 1 ? (
@@ -147,6 +159,13 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
                 </TableCell>
               </TableRow>
             ))}
+            {!leaderboardData[activeMetric] && (
+              <TableRow>
+                <TableCell colSpan={3} className="text-center py-8 text-fitbloom-text-medium">
+                  No data available for this metric
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
