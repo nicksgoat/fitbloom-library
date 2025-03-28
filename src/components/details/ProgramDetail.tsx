@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ItemType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -13,10 +12,22 @@ interface ProgramDetailProps {
   onClose: () => void;
 }
 
+const PROGRAM_WEEKS = {
+  'p1': 4, // 30-Day Strength Challenge
+  'p2': 8, // Couch to 5K
+  'p3': 3, // Mobility Mastery
+  'p4': 12, // Athlete Performance
+  'p5': 8, // Body Transformation
+  'p6': 6, // Yoga Journey
+  // Default value
+  'default': 4
+};
+
 const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
   const [activeTab, setActiveTab] = useState<string>("details");
   const [activeWeek, setActiveWeek] = useState<number>(1);
-  const totalWeeks = 6; // This could be dynamic based on the program data
+  
+  const totalWeeks = PROGRAM_WEEKS[item.id as keyof typeof PROGRAM_WEEKS] || PROGRAM_WEEKS.default;
 
   return (
     <div className="flex flex-col h-[80vh] overflow-y-auto pb-safe">
