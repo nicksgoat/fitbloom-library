@@ -102,7 +102,7 @@
   }
   
   .content-card-image {
-    @apply h-40 w-full object-cover;
+    @apply h-24 sm:h-28 w-full object-cover;
   }
   
   .hover-scale {

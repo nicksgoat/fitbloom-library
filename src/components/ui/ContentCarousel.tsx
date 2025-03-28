@@ -30,11 +30,11 @@ const ContentCarousel = ({ items }: ContentCarouselProps) => {
     <div className="relative group">
       <div 
         ref={carouselRef}
-        className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x"
+        className="flex overflow-x-auto gap-3 pb-4 scrollbar-hide snap-x"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {items.map((item) => (
-          <div key={item.id} className="min-w-[250px] snap-start">
+          <div key={item.id} className="min-w-[140px] max-w-[140px] sm:min-w-[160px] sm:max-w-[160px] snap-start">
             <ContentCard item={item} />
           </div>
         ))}

@@ -24,22 +24,22 @@ const ContentCard = ({ item, className }: ContentCardProps) => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="absolute top-2 right-2 rounded-full bg-black/30 hover:bg-black/50"
+          className="absolute top-1 right-1 rounded-full bg-black/30 hover:bg-black/50 h-7 w-7 p-1"
         >
-          <Heart className={cn("h-4 w-4", item.isFavorite ? "fill-fitbloom-purple text-fitbloom-purple" : "text-white")} />
+          <Heart className={cn("h-3 w-3", item.isFavorite ? "fill-fitbloom-purple text-fitbloom-purple" : "text-white")} />
         </Button>
       </div>
-      <CardContent className="p-4">
+      <CardContent className="p-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium uppercase text-fitbloom-text-medium">{item.type}</span>
-          <span className="text-xs">{item.duration}</span>
+          <span className="text-xs text-fitbloom-text-medium">{item.duration}</span>
         </div>
-        <h3 className="font-semibold mt-2 line-clamp-2">{item.title}</h3>
-        <p className="text-sm text-fitbloom-text-medium mt-1 line-clamp-1">{item.creator}</p>
+        <h3 className="font-semibold mt-1 text-xs sm:text-sm line-clamp-1">{item.title}</h3>
+        <p className="text-xs text-fitbloom-text-medium mt-0.5 line-clamp-1">{item.creator}</p>
       </CardContent>
-      <CardFooter className="pt-0 px-4 pb-4 flex flex-wrap gap-1">
-        {item.tags?.slice(0, 3).map((tag, index) => (
-          <Badge key={index} variant="outline" className="text-xs">
+      <CardFooter className="pt-0 px-2 pb-2 flex flex-wrap gap-1">
+        {item.tags?.slice(0, 2).map((tag, index) => (
+          <Badge key={index} variant="outline" className="text-[10px] px-1.5 py-0">
             {tag}
           </Badge>
         ))}

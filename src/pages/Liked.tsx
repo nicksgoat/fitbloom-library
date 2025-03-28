@@ -13,16 +13,16 @@ const Liked = () => {
   const likedPrograms = mockPrograms.filter(item => item.isFavorite);
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Heart className="h-6 w-6 fill-fitbloom-purple text-fitbloom-purple" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Heart className="h-5 w-5 fill-fitbloom-purple text-fitbloom-purple" />
           Liked Content
         </h1>
       </div>
 
       <Tabs defaultValue="exercises" className="w-full">
-        <TabsList className="mb-6">
+        <TabsList className="mb-4">
           <TabsTrigger value="exercises">Exercises</TabsTrigger>
           <TabsTrigger value="workouts">Workouts</TabsTrigger>
           <TabsTrigger value="programs">Programs</TabsTrigger>
@@ -32,9 +32,9 @@ const Liked = () => {
           {likedExercises.length > 0 ? (
             <ContentGrid items={likedExercises} />
           ) : (
-            <div className="text-center py-10">
+            <div className="text-center py-8">
               <p className="text-gray-400">You haven't liked any exercises yet.</p>
-              <Button className="mt-4 bg-fitbloom-purple hover:bg-opacity-90">
+              <Button className="mt-4 bg-fitbloom-purple hover:bg-opacity-90 text-sm">
                 Explore Exercises
               </Button>
             </div>
@@ -45,9 +45,9 @@ const Liked = () => {
           {likedWorkouts.length > 0 ? (
             <ContentGrid items={likedWorkouts} />
           ) : (
-            <div className="text-center py-10">
+            <div className="text-center py-8">
               <p className="text-gray-400">You haven't liked any workouts yet.</p>
-              <Button className="mt-4 bg-fitbloom-purple hover:bg-opacity-90">
+              <Button className="mt-4 bg-fitbloom-purple hover:bg-opacity-90 text-sm">
                 Explore Workouts
               </Button>
             </div>
@@ -58,9 +58,9 @@ const Liked = () => {
           {likedPrograms.length > 0 ? (
             <ContentGrid items={likedPrograms} />
           ) : (
-            <div className="text-center py-10">
+            <div className="text-center py-8">
               <p className="text-gray-400">You haven't liked any programs yet.</p>
-              <Button className="mt-4 bg-fitbloom-purple hover:bg-opacity-90">
+              <Button className="mt-4 bg-fitbloom-purple hover:bg-opacity-90 text-sm">
                 Explore Programs
               </Button>
             </div>
