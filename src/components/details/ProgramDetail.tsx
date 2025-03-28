@@ -3,7 +3,7 @@ import React from 'react';
 import { ItemType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Heart, Share2 } from 'lucide-react';
+import { Calendar, Clock, Heart } from 'lucide-react';
 
 interface ProgramDetailProps {
   item: ItemType;
@@ -83,26 +83,34 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
           </div>
         </div>
 
-        {/* Workouts in this program */}
-        <div className="mt-6">
-          <h2 className="font-semibold mb-2">Workouts</h2>
-          <div className="space-y-3">
-            {[1, 2, 3, 4].map((_, index) => (
-              <div key={index} className="flex items-center gap-3 bg-gray-900 rounded-lg p-3">
-                <div className="h-10 w-10 rounded-md bg-gray-800 flex items-center justify-center font-medium">
-                  W{index + 1}
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm font-medium">
-                    {["Upper Body Focus", "Lower Body Power", "Full Body HIIT", "Recovery & Mobility"][index]}
-                  </h3>
-                  <p className="text-xs text-fitbloom-text-medium mt-1">
-                    {["7 exercises • 45 min", "6 exercises • 50 min", "8 exercises • 30 min", "5 exercises • 40 min"][index]}
-                  </p>
-                </div>
+        {/* Workouts in this program by week */}
+        <div className="mt-6 space-y-4">
+          {[1, 2, 3].map((weekNum) => (
+            <div key={weekNum} className="space-y-2">
+              <h2 className="font-semibold">Week {weekNum}</h2>
+              <div className="space-y-3">
+                {[1, 2].map((workoutNum) => (
+                  <div key={`${weekNum}-${workoutNum}`} className="flex items-center gap-3 bg-gray-900 rounded-lg p-3">
+                    <div className="h-10 w-10 rounded-md bg-gray-800 flex items-center justify-center font-medium">
+                      W{workoutNum}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-medium">
+                        {weekNum === 1 
+                          ? ["Upper Body Focus", "Lower Body Power"][workoutNum-1] 
+                          : weekNum === 2 
+                            ? ["Full Body HIIT", "Recovery & Mobility"][workoutNum-1]
+                            : ["Strength Circuit", "Conditioning"][workoutNum-1]}
+                      </h3>
+                      <p className="text-xs text-fitbloom-text-medium mt-1">
+                        {["7 exercises • 45 min", "6 exercises • 50 min", "8 exercises • 30 min", "5 exercises • 40 min", "6 exercises • 35 min", "7 exercises • 45 min"][weekNum+workoutNum-2]}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 

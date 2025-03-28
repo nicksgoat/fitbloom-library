@@ -3,7 +3,7 @@ import React from 'react';
 import { ItemType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Heart, Share2 } from 'lucide-react';
+import { Clock, Heart } from 'lucide-react';
 
 interface WorkoutDetailProps {
   item: ItemType;
@@ -61,15 +61,6 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({ item, onClose }) => {
           <p className="text-sm text-gray-300">
             {item.description || "This workout combines multiple exercises for a complete training session. Follow the exercise sequence for maximum efficiency."}
           </p>
-        </div>
-
-        {/* Workout Schedule */}
-        <div className="mt-6">
-          <h2 className="font-semibold mb-2">Schedule</h2>
-          <div className="flex items-center gap-2 mb-2">
-            <Calendar className="h-4 w-4 text-fitbloom-purple" />
-            <span className="text-sm">3 times per week</span>
-          </div>
         </div>
 
         {/* Exercises in this workout */}
