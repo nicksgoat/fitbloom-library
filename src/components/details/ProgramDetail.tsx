@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ItemType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -7,93 +6,11 @@ import { Calendar, Clock, Heart } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import LeaderboardTab from './LeaderboardTab';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import WorkoutDetail from './WorkoutDetail';
 
 interface ProgramDetailProps {
   item: ItemType;
   onClose: () => void;
 }
-
-// Mock workouts for demonstration purposes
-const MOCK_WORKOUTS: { [key: string]: ItemType[] } = {
-  'week1': [
-    {
-      id: 'w1',
-      title: 'Upper Body Focus',
-      type: 'workout',
-      creator: 'FitBloom',
-      imageUrl: '/placeholder.svg',
-      duration: '45 min',
-      tags: ['strength', 'upper body'],
-      difficulty: 'intermediate',
-      isFavorite: false,
-      description: 'Complete upper body strength workout focusing on chest, shoulders, and triceps.'
-    },
-    {
-      id: 'w2',
-      title: 'Lower Body Power',
-      type: 'workout',
-      creator: 'FitBloom',
-      imageUrl: '/placeholder.svg',
-      duration: '50 min',
-      tags: ['strength', 'lower body'],
-      difficulty: 'intermediate',
-      isFavorite: false,
-      description: 'Challenging lower body workout targeting quads, hamstrings, and glutes.'
-    },
-    {
-      id: 'w3',
-      title: 'Core & Cardio',
-      type: 'workout',
-      creator: 'FitBloom',
-      imageUrl: '/placeholder.svg',
-      duration: '30 min',
-      tags: ['cardio', 'core'],
-      difficulty: 'beginner',
-      isFavorite: false,
-      description: 'Combined core and cardio workout to improve endurance and core strength.'
-    }
-  ],
-  'week2': [
-    {
-      id: 'w4',
-      title: 'Full Body HIIT',
-      type: 'workout',
-      creator: 'FitBloom',
-      imageUrl: '/placeholder.svg',
-      duration: '40 min',
-      tags: ['hiit', 'full body'],
-      difficulty: 'advanced',
-      isFavorite: false,
-      description: 'High-intensity interval training for your entire body.'
-    },
-    {
-      id: 'w5',
-      title: 'Recovery & Mobility',
-      type: 'workout',
-      creator: 'FitBloom',
-      imageUrl: '/placeholder.svg',
-      duration: '35 min',
-      tags: ['recovery', 'mobility'],
-      difficulty: 'beginner',
-      isFavorite: false,
-      description: 'Focus on recovery and mobility to prevent injuries.'
-    },
-    {
-      id: 'w6',
-      title: 'Strength Challenge',
-      type: 'workout',
-      creator: 'FitBloom',
-      imageUrl: '/placeholder.svg',
-      duration: '45 min',
-      tags: ['strength', 'challenge'],
-      difficulty: 'intermediate',
-      isFavorite: false,
-      description: 'Challenge yourself with this comprehensive strength workout.'
-    }
-  ]
-};
 
 const PROGRAM_WEEKS = {
   'p1': 4, // 30-Day Strength Challenge
@@ -109,25 +26,8 @@ const PROGRAM_WEEKS = {
 const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
   const [activeTab, setActiveTab] = useState<string>("details");
   const [activeWeek, setActiveWeek] = useState<number>(1);
-  const [selectedWorkout, setSelectedWorkout] = useState<ItemType | null>(null);
-  const [workoutDialogOpen, setWorkoutDialogOpen] = useState(false);
   
   const totalWeeks = PROGRAM_WEEKS[item.id as keyof typeof PROGRAM_WEEKS] || PROGRAM_WEEKS.default;
-
-  const handleWorkoutClick = (workout: ItemType) => {
-    setSelectedWorkout(workout);
-    setWorkoutDialogOpen(true);
-  };
-
-  // Get mock workouts for the current week
-  const getWeekWorkouts = (weekIndex: number) => {
-    return weekIndex === 0 ? MOCK_WORKOUTS.week1 : MOCK_WORKOUTS.week2;
-  };
-
-  // This function will be called when a carousel item is selected
-  const handleCarouselSelect = (index: number) => {
-    setActiveWeek(index + 1);
-  };
 
   return (
     <div className="flex flex-col h-[80vh] overflow-y-auto pb-safe">
@@ -237,8 +137,10 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
                     loop: false,
                   }}
                   onSelect={(api) => {
-                    const selectedIndex = api.selectedScrollSnap();
-                    handleCarouselSelect(selectedIndex);
+                    if (api) {
+                      const selectedIndex = api.selectedScrollSnap();
+                      setActiveWeek(selectedIndex + 1);
+                    }
                   }}
                   className="w-full"
                 >
@@ -249,21 +151,22 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
                           <div className="bg-gray-900 rounded-lg px-4 py-3 mb-4">
                             <h3 className="text-sm font-bold text-center">Week {weekIndex + 1}</h3>
                           </div>
-                          {getWeekWorkouts(weekIndex % 2).map((workout, workoutIndex) => (
-                            <div 
-                              key={`${weekIndex+1}-${workoutIndex}`} 
-                              className="flex items-center gap-3 bg-gray-900 rounded-lg p-3 cursor-pointer hover:bg-gray-800 transition-colors"
-                              onClick={() => handleWorkoutClick(workout)}
-                            >
+                          {[1, 2, 3].map((workoutNum) => (
+                            <div key={`${weekIndex+1}-${workoutNum}`} className="flex items-center gap-3 bg-gray-900 rounded-lg p-3">
                               <div className="h-10 w-10 rounded-md bg-gray-800 flex items-center justify-center font-medium">
-                                W{workoutIndex + 1}
+                                W{workoutNum}
                               </div>
                               <div className="flex-1">
                                 <h3 className="text-sm font-medium">
-                                  {workout.title}
+                                  {weekIndex === 0 
+                                    ? ["Upper Body Focus", "Lower Body Power", "Core & Cardio"][workoutNum-1] 
+                                    : weekIndex === 1 
+                                      ? ["Full Body HIIT", "Recovery & Mobility", "Strength Challenge"][workoutNum-1]
+                                      : ["Strength Circuit", "Conditioning", "Active Recovery"][workoutNum-1]}
                                 </h3>
                                 <p className="text-xs text-fitbloom-text-medium mt-1">
-                                  {workout.duration} • {workout.tags?.join(' • ')}
+                                  {["7 exercises • 45 min", "6 exercises • 50 min", "8 exercises • 30 min", 
+                                    "5 exercises • 40 min", "6 exercises • 35 min", "7 exercises • 45 min"][((weekIndex*3)+workoutNum-1) % 6]}
                                 </p>
                               </div>
                             </div>
@@ -292,18 +195,6 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
           Start Program
         </Button>
       </div>
-
-      {/* Workout Detail Dialog */}
-      <Dialog open={workoutDialogOpen} onOpenChange={setWorkoutDialogOpen}>
-        <DialogContent className="bg-black text-white border border-gray-800 max-w-5xl max-h-[90vh] overflow-y-auto p-0">
-          {selectedWorkout && (
-            <WorkoutDetail 
-              item={selectedWorkout} 
-              onClose={() => setWorkoutDialogOpen(false)} 
-            />
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
