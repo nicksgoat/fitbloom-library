@@ -1,12 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Trophy } from 'lucide-react';
 
 // Types for metrics and records
-type MetricType = 'All Metrics' | 'Weight' | 'Time' | 'Distance' | 'Custom';
+type MetricType = 'Weight' | 'Reps' | 'Sets' | 'Time' | 'Distance' | 'Calories';
 type LeaderboardRecord = {
   id: number;
   rank: number;
@@ -19,44 +19,75 @@ type LeaderboardRecord = {
   change?: number;
 };
 
-// Sample data for the leaderboard
-const sampleData: Record<MetricType, LeaderboardRecord[]> = {
-  'All Metrics': [
-    { id: 1, rank: 1, user: { name: 'AlexStrong' }, value: '315', unit: 'lbs', change: 2 },
-    { id: 2, rank: 2, user: { name: 'FitnessFan' }, value: '300', unit: 'lbs', change: -1 },
-    { id: 3, rank: 3, user: { name: 'GymRat' }, value: '285', unit: 'lbs', change: 1 },
-  ],
-  'Weight': [
-    { id: 1, rank: 1, user: { name: 'AlexStrong' }, value: '315', unit: 'lbs', change: 2 },
-    { id: 2, rank: 2, user: { name: 'PowerLifter' }, value: '305', unit: 'lbs', change: 0 },
-    { id: 3, rank: 3, user: { name: 'WeightCrusher' }, value: '290', unit: 'lbs', change: 0 },
-  ],
-  'Time': [
-    { id: 1, rank: 1, user: { name: 'SpeedDemon' }, value: '1:45', unit: 'min', change: 0 },
-    { id: 2, rank: 2, user: { name: 'QuickRunner' }, value: '1:52', unit: 'min', change: 1 },
-    { id: 3, rank: 3, user: { name: 'FastPacer' }, value: '2:05', unit: 'min', change: -1 },
-  ],
-  'Distance': [
-    { id: 1, rank: 1, user: { name: 'MarathonMan' }, value: '26.2', unit: 'miles', change: 0 },
-    { id: 2, rank: 2, user: { name: 'LongRunner' }, value: '23.5', unit: 'miles', change: 0 },
-    { id: 3, rank: 3, user: { name: 'DistanceKing' }, value: '21.8', unit: 'miles', change: 2 },
-  ],
-  'Custom': [
-    { id: 1, rank: 1, user: { name: 'CustomChamp' }, value: '45', unit: 'reps', change: 1 },
-    { id: 2, rank: 2, user: { name: 'RepMaster' }, value: '42', unit: 'reps', change: -1 },
-    { id: 3, rank: 3, user: { name: 'EnduranceKing' }, value: '38', unit: 'reps', change: 0 },
-  ],
-};
-
 interface LeaderboardTabProps {
   itemTitle: string;
   itemType: 'exercise' | 'workout' | 'program';
 }
 
 const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) => {
-  const [activeMetric, setActiveMetric] = useState<MetricType>('Weight');
-  const metrics: MetricType[] = ['All Metrics', 'Weight', 'Time', 'Distance', 'Custom'];
+  // Define relevant metrics based on item type
+  const relevantMetrics = useMemo(() => {
+    if (itemType === 'exercise') {
+      // Different exercises have different relevant metrics
+      if (itemTitle.toLowerCase().includes('press') || 
+          itemTitle.toLowerCase().includes('lift') || 
+          itemTitle.toLowerCase().includes('curl') ||
+          itemTitle.toLowerCase().includes('squat')) {
+        return ['Weight', 'Reps', 'Sets'];
+      } else if (itemTitle.toLowerCase().includes('run') || 
+                itemTitle.toLowerCase().includes('sprint') || 
+                itemTitle.toLowerCase().includes('jog')) {
+        return ['Distance', 'Time', 'Calories'];
+      } else if (itemTitle.toLowerCase().includes('plank') || 
+                itemTitle.toLowerCase().includes('hold')) {
+        return ['Time', 'Sets'];
+      } else {
+        return ['Reps', 'Sets', 'Weight'];
+      }
+    } else if (itemType === 'workout') {
+      return ['Time', 'Calories', 'Reps'];
+    } else {
+      // Program
+      return ['Calories', 'Time', 'Completion'];
+    }
+  }, [itemTitle, itemType]);
   
+  const [activeMetric, setActiveMetric] = useState<MetricType>(relevantMetrics[0]);
+  
+  // Sample leaderboard data based on metrics
+  const leaderboardData: Record<MetricType, LeaderboardRecord[]> = {
+    'Weight': [
+      { id: 1, rank: 1, user: { name: 'AlexStrong' }, value: '315', unit: 'lbs', change: 2 },
+      { id: 2, rank: 2, user: { name: 'PowerLifter' }, value: '305', unit: 'lbs', change: 0 },
+      { id: 3, rank: 3, user: { name: 'GymRat' }, value: '285', unit: 'lbs', change: 1 },
+    ],
+    'Reps': [
+      { id: 1, rank: 1, user: { name: 'RepMaster' }, value: '32', unit: 'reps', change: 1 },
+      { id: 2, rank: 2, user: { name: 'EndurancePro' }, value: '28', unit: 'reps', change: -1 },
+      { id: 3, rank: 3, user: { name: 'FitnessFan' }, value: '25', unit: 'reps', change: 0 },
+    ],
+    'Sets': [
+      { id: 1, rank: 1, user: { name: 'VolumeKing' }, value: '8', unit: 'sets', change: 0 },
+      { id: 2, rank: 2, user: { name: 'WorkoutBeast' }, value: '7', unit: 'sets', change: 2 },
+      { id: 3, rank: 3, user: { name: 'SetMaster' }, value: '6', unit: 'sets', change: -1 },
+    ],
+    'Time': [
+      { id: 1, rank: 1, user: { name: 'SpeedDemon' }, value: '1:45', unit: 'min', change: 0 },
+      { id: 2, rank: 2, user: { name: 'QuickRunner' }, value: '1:52', unit: 'min', change: 1 },
+      { id: 3, rank: 3, user: { name: 'FastPacer' }, value: '2:05', unit: 'min', change: -1 },
+    ],
+    'Distance': [
+      { id: 1, rank: 1, user: { name: 'MarathonMan' }, value: '26.2', unit: 'miles', change: 0 },
+      { id: 2, rank: 2, user: { name: 'LongRunner' }, value: '23.5', unit: 'miles', change: 0 },
+      { id: 3, rank: 3, user: { name: 'DistanceKing' }, value: '21.8', unit: 'miles', change: 2 },
+    ],
+    'Calories': [
+      { id: 1, rank: 1, user: { name: 'BurnMaster' }, value: '950', unit: 'kcal', change: 1 },
+      { id: 2, rank: 2, user: { name: 'CalorieKiller' }, value: '875', unit: 'kcal', change: -1 },
+      { id: 3, rank: 3, user: { name: 'FatBurner' }, value: '820', unit: 'kcal', change: 0 },
+    ],
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -65,12 +96,12 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {metrics.map((metric) => (
+        {relevantMetrics.map((metric) => (
           <Badge
             key={metric}
             variant={activeMetric === metric ? "default" : "outline"}
             className={`cursor-pointer ${activeMetric === metric ? 'bg-fitbloom-purple' : ''}`}
-            onClick={() => setActiveMetric(metric)}
+            onClick={() => setActiveMetric(metric as MetricType)}
           >
             {metric}
           </Badge>
@@ -87,7 +118,7 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sampleData[activeMetric].map((record) => (
+            {leaderboardData[activeMetric].map((record) => (
               <TableRow key={record.id} className="border-gray-800">
                 <TableCell className="text-center">
                   {record.rank === 1 ? (
