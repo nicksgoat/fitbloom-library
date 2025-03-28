@@ -237,10 +237,8 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
                     loop: false,
                   }}
                   onSelect={(api) => {
-                    if (api) {
-                      const selectedIndex = api.selectedScrollSnap();
-                      handleCarouselSelect(selectedIndex);
-                    }
+                    const selectedIndex = api.selectedScrollSnap();
+                    handleCarouselSelect(selectedIndex);
                   }}
                   className="w-full"
                 >
@@ -297,7 +295,7 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
 
       {/* Workout Detail Dialog */}
       <Dialog open={workoutDialogOpen} onOpenChange={setWorkoutDialogOpen}>
-        <DialogContent className="bg-black text-white border border-gray-800 max-w-5xl max-h-[90vh] overflow-y-auto p-0" onClick={(e) => e.stopPropagation()}>
+        <DialogContent className="bg-black text-white border border-gray-800 max-w-5xl max-h-[90vh] overflow-y-auto p-0">
           {selectedWorkout && (
             <WorkoutDetail 
               item={selectedWorkout} 
