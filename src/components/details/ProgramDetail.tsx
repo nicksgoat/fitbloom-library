@@ -127,7 +127,8 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
                   }}
                   onSelect={(api) => {
                     if (api) {
-                      setActiveWeek(api.selectedScrollSnap() + 1);
+                      const selectedIndex = api.selectedScrollSnap();
+                      setActiveWeek(selectedIndex + 1);
                     }
                   }}
                   className="w-full"
