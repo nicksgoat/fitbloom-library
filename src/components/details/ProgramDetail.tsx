@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ItemType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, Heart } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import LeaderboardTab from './LeaderboardTab';
@@ -17,10 +17,6 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
   const [activeTab, setActiveTab] = useState<string>("details");
   const [activeWeek, setActiveWeek] = useState<number>(1);
   const totalWeeks = 6; // This could be dynamic based on the program data
-
-  const handleWeekChange = (week: number) => {
-    setActiveWeek(week);
-  };
 
   return (
     <div className="flex flex-col h-[80vh] overflow-y-auto pb-safe">
@@ -130,8 +126,10 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
                     loop: false,
                   }}
                   onSelect={(api) => {
-                    const selectedIndex = api?.selectedScrollSnap() || 0;
-                    handleWeekChange(selectedIndex + 1);
+                    if (api) {
+                      const selectedIndex = api.selectedScrollSnap();
+                      setActiveWeek(selectedIndex + 1);
+                    }
                   }}
                   className="w-full"
                 >
