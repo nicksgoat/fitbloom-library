@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import { ItemType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Heart } from 'lucide-react';
+import { Calendar, Clock, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import LeaderboardTab from './LeaderboardTab';
 
 interface ProgramDetailProps {
@@ -15,7 +16,11 @@ interface ProgramDetailProps {
 const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
   const [activeTab, setActiveTab] = useState<string>("details");
   const [activeWeek, setActiveWeek] = useState<number>(1);
-  const totalWeeks = 3; // This could be dynamic based on the program data
+  const totalWeeks = 6; // This could be dynamic based on the program data
+
+  const handleWeekChange = (week: number) => {
+    setActiveWeek(week);
+  };
 
   return (
     <div className="flex flex-col h-[80vh] overflow-y-auto pb-safe">
@@ -96,7 +101,7 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
               <h2 className="font-semibold mb-2">Duration</h2>
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-4 w-4 text-fitbloom-purple" />
-                <span className="text-sm">6 weeks program</span>
+                <span className="text-sm">{totalWeeks} weeks program</span>
               </div>
             </div>
 
@@ -111,49 +116,60 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
               </div>
             </div>
 
-            {/* Workouts in this program by week - with tabs */}
+            {/* Workouts in this program by week - with swipeable carousel */}
             <div className="mt-6 space-y-4">
-              <h2 className="font-semibold">Weekly Workouts</h2>
+              <div className="flex justify-between items-center">
+                <h2 className="font-semibold">Weekly Workouts</h2>
+                <span className="text-sm text-fitbloom-purple">Week {activeWeek} of {totalWeeks}</span>
+              </div>
               
-              <Tabs value={activeWeek.toString()} onValueChange={(value) => setActiveWeek(Number(value))} className="w-full">
-                <TabsList className="bg-gray-900 w-full justify-between overflow-x-auto flex mb-4">
-                  {Array.from({ length: totalWeeks }).map((_, index) => (
-                    <TabsTrigger
-                      key={index}
-                      value={(index + 1).toString()}
-                      className="flex-1 data-[state=active]:bg-gray-800 data-[state=active]:text-white rounded-sm text-sm py-2"
-                    >
-                      Week {index + 1}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                
-                {Array.from({ length: totalWeeks }).map((_, weekIndex) => (
-                  <TabsContent key={weekIndex} value={(weekIndex + 1).toString()} className="mt-0">
-                    <div className="space-y-3">
-                      {[1, 2].map((workoutNum) => (
-                        <div key={`${weekIndex+1}-${workoutNum}`} className="flex items-center gap-3 bg-gray-900 rounded-lg p-3">
-                          <div className="h-10 w-10 rounded-md bg-gray-800 flex items-center justify-center font-medium">
-                            W{workoutNum}
+              <div className="relative">
+                <Carousel 
+                  opts={{
+                    align: 'start',
+                    loop: false,
+                  }}
+                  onSelect={(api) => {
+                    const selectedIndex = api?.selectedScrollSnap() || 0;
+                    handleWeekChange(selectedIndex + 1);
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {Array.from({ length: totalWeeks }).map((_, weekIndex) => (
+                      <CarouselItem key={weekIndex} className="basis-full">
+                        <div className="space-y-3">
+                          <div className="bg-gray-900 rounded-lg px-4 py-3 mb-4">
+                            <h3 className="text-sm font-bold text-center">Week {weekIndex + 1}</h3>
                           </div>
-                          <div className="flex-1">
-                            <h3 className="text-sm font-medium">
-                              {weekIndex === 0 
-                                ? ["Upper Body Focus", "Lower Body Power"][workoutNum-1] 
-                                : weekIndex === 1 
-                                  ? ["Full Body HIIT", "Recovery & Mobility"][workoutNum-1]
-                                  : ["Strength Circuit", "Conditioning"][workoutNum-1]}
-                            </h3>
-                            <p className="text-xs text-fitbloom-text-medium mt-1">
-                              {["7 exercises • 45 min", "6 exercises • 50 min", "8 exercises • 30 min", "5 exercises • 40 min", "6 exercises • 35 min", "7 exercises • 45 min"][weekIndex+workoutNum-1]}
-                            </p>
-                          </div>
+                          {[1, 2, 3].map((workoutNum) => (
+                            <div key={`${weekIndex+1}-${workoutNum}`} className="flex items-center gap-3 bg-gray-900 rounded-lg p-3">
+                              <div className="h-10 w-10 rounded-md bg-gray-800 flex items-center justify-center font-medium">
+                                W{workoutNum}
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="text-sm font-medium">
+                                  {weekIndex === 0 
+                                    ? ["Upper Body Focus", "Lower Body Power", "Core & Cardio"][workoutNum-1] 
+                                    : weekIndex === 1 
+                                      ? ["Full Body HIIT", "Recovery & Mobility", "Strength Challenge"][workoutNum-1]
+                                      : ["Strength Circuit", "Conditioning", "Active Recovery"][workoutNum-1]}
+                                </h3>
+                                <p className="text-xs text-fitbloom-text-medium mt-1">
+                                  {["7 exercises • 45 min", "6 exercises • 50 min", "8 exercises • 30 min", 
+                                    "5 exercises • 40 min", "6 exercises • 35 min", "7 exercises • 45 min"][((weekIndex*3)+workoutNum-1) % 6]}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-                ))}
-              </Tabs>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-0 top-1/2 -translate-y-1/2 bg-gray-900/80 hover:bg-gray-800/90 border-gray-700" />
+                  <CarouselNext className="right-0 top-1/2 -translate-y-1/2 bg-gray-900/80 hover:bg-gray-800/90 border-gray-700" />
+                </Carousel>
+              </div>
             </div>
           </>
         ) : (
