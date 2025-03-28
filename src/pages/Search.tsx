@@ -1,18 +1,28 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Search as SearchIcon, X } from 'lucide-react';
+import { Search as SearchIcon, X, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import ContentGrid from '@/components/ui/ContentGrid';
 import { mockExercises, mockWorkouts, mockPrograms } from '@/lib/mockData';
 import { ItemType } from '@/lib/types';
 import MainLayout from '@/components/layout/MainLayout';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 
 const SearchPage = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<ItemType[]>([]);
+  const [typeFilter, setTypeFilter] = useState<'all' | 'exercise' | 'workout' | 'program'>('all');
+  const [difficultyFilter, setDifficultyFilter] = useState<'all' | 'beginner' | 'intermediate' | 'advanced'>('all');
+  
   const allItems = [...mockExercises, ...mockWorkouts, ...mockPrograms];
 
   // Parse search query from URL if present
@@ -32,14 +42,18 @@ const SearchPage = () => {
     }
 
     const normalizedQuery = query.toLowerCase().trim();
-    const results = allItems.filter(item => {
-      return (
+    let results = allItems.filter(item => {
+      const matchesQuery = 
         item.title.toLowerCase().includes(normalizedQuery) ||
         item.creator.toLowerCase().includes(normalizedQuery) ||
         item.type.toLowerCase().includes(normalizedQuery) ||
         item.tags?.some(tag => tag.toLowerCase().includes(normalizedQuery)) ||
-        (item.description && item.description.toLowerCase().includes(normalizedQuery))
-      );
+        (item.description && item.description.toLowerCase().includes(normalizedQuery));
+      
+      const matchesType = typeFilter === 'all' || item.type === typeFilter;
+      const matchesDifficulty = difficultyFilter === 'all' || item.difficulty === difficultyFilter;
+      
+      return matchesQuery && matchesType && matchesDifficulty;
     });
 
     setSearchResults(results);
@@ -79,6 +93,44 @@ const SearchPage = () => {
               <X className="h-4 w-4" />
             </Button>
           )}
+        </div>
+
+        <div className="flex space-x-2">
+          <Select 
+            value={typeFilter} 
+            onValueChange={(value: 'all' | 'exercise' | 'workout' | 'program') => {
+              setTypeFilter(value);
+              performSearch(searchQuery);
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="exercise">Exercises</SelectItem>
+              <SelectItem value="workout">Workouts</SelectItem>
+              <SelectItem value="program">Programs</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select 
+            value={difficultyFilter} 
+            onValueChange={(value: 'all' | 'beginner' | 'intermediate' | 'advanced') => {
+              setDifficultyFilter(value);
+              performSearch(searchQuery);
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Difficulty" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Difficulties</SelectItem>
+              <SelectItem value="beginner">Beginner</SelectItem>
+              <SelectItem value="intermediate">Intermediate</SelectItem>
+              <SelectItem value="advanced">Advanced</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {searchQuery && (
