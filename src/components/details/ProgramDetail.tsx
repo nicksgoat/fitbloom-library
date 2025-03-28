@@ -64,6 +64,17 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
     setSelectedWorkout(workout);
   };
 
+  // Handle the embla carousel API
+  const handleCarouselApiChange = (api: any) => {
+    if (!api) return;
+    
+    // When the carousel selects a slide, update the active week
+    api.on('select', () => {
+      const selectedIndex = api.selectedScrollSnap();
+      setActiveWeek(selectedIndex + 1);
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col h-[80vh] overflow-y-auto pb-safe">
@@ -172,9 +183,7 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({ item, onClose }) => {
                       align: 'start',
                       loop: false,
                     }}
-                    onScrollSnapChange={(index) => {
-                      setActiveWeek(index + 1);
-                    }}
+                    setApi={handleCarouselApiChange}
                     className="w-full"
                   >
                     <CarouselContent>
