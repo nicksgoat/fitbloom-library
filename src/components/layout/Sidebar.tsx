@@ -9,12 +9,12 @@ const Sidebar = () => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Explore', path: '/', icon: <Compass className="h-5 w-5" /> },
+    { name: 'Explore', path: '/explore', icon: <Compass className="h-5 w-5" /> },
     { name: 'My Library', path: '/library', icon: <Library className="h-5 w-5" /> },
   ];
 
   return (
-    <div className="bg-sidebar w-64 h-full flex flex-col">
+    <div className="bg-black w-64 h-full flex flex-col">
       <div className="p-6">
         <h1 className="text-2xl font-bold flex items-center">
           <span className="text-fitbloom-purple">Fit</span>
@@ -29,8 +29,8 @@ const Sidebar = () => {
                 <Button
                   variant="ghost"
                   className={cn(
-                    "w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground",
-                    location.pathname === item.path && "bg-sidebar-accent text-primary font-medium"
+                    "w-full justify-start text-white hover:bg-gray-900 hover:text-white",
+                    location.pathname === item.path && "bg-gray-900 text-primary font-medium"
                   )}
                 >
                   {item.icon}
