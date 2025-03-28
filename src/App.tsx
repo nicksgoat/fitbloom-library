@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Explore from "./pages/Explore";
 import Library from "./pages/Library";
 import Liked from "./pages/Liked";
+import Search from "./pages/Search";
 import MainLayout from "./components/layout/MainLayout";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/explore" element={<MainLayout><Explore /></MainLayout>} />
           <Route path="/library" element={<MainLayout><Library /></MainLayout>} />
           <Route path="/liked" element={<MainLayout><Liked /></MainLayout>} />
+          <Route path="/search" element={<Search />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

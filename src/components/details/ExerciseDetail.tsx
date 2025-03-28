@@ -3,7 +3,7 @@ import React from 'react';
 import { ItemType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Heart, Share2 } from 'lucide-react';
+import { Heart, Share2 } from 'lucide-react';
 
 interface ExerciseDetailProps {
   item: ItemType;
@@ -35,10 +35,6 @@ const ExerciseDetail: React.FC<ExerciseDetailProps> = ({ item, onClose }) => {
         <div>
           <div className="flex justify-between items-start mb-1">
             <span className="text-xs font-medium uppercase text-fitbloom-text-medium">{item.type}</span>
-            <div className="flex items-center gap-1">
-              <Clock className="h-3 w-3 text-fitbloom-text-medium" />
-              <span className="text-xs text-fitbloom-text-medium">{item.duration}</span>
-            </div>
           </div>
           <h1 className="text-xl font-bold mb-1">{item.title}</h1>
           <p className="text-sm text-fitbloom-text-medium">{item.creator}</p>

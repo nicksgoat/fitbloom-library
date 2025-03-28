@@ -38,7 +38,9 @@ const ContentCard = ({ item, className }: ContentCardProps) => {
         <CardContent className="p-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium uppercase text-fitbloom-text-medium">{item.type}</span>
-            <span className="text-xs text-fitbloom-text-medium">{item.duration}</span>
+            {item.type !== 'exercise' && (
+              <span className="text-xs text-fitbloom-text-medium">{item.duration}</span>
+            )}
           </div>
           <h3 className="font-semibold mt-1 text-xs sm:text-sm line-clamp-1">{item.title}</h3>
           <p className="text-xs text-fitbloom-text-medium mt-0.5 line-clamp-1">{item.creator}</p>

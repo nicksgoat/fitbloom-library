@@ -4,6 +4,7 @@ import { Search, Bell, User, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,11 +17,19 @@ import {
 const TopBar = () => {
   const [searchValue, setSearchValue] = useState('');
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchValue.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
+    }
+  };
 
   return (
     <header className="p-4 flex items-center justify-between border-b border-gray-900">
       {!isMobile && (
-        <div className="relative w-1/3">
+        <form onSubmit={handleSearch} className="relative w-1/3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
             type="text"
@@ -29,7 +38,7 @@ const TopBar = () => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-        </div>
+        </form>
       )}
 
       {isMobile && (
@@ -40,6 +49,16 @@ const TopBar = () => {
       )}
 
       <div className="flex items-center space-x-4">
+        {isMobile && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-gray-900" 
+            onClick={() => navigate('/search')}
+          >
+            <Search className="h-4 w-4" />
+          </Button>
+        )}
         {!isMobile && (
           <>
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-900">
