@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Trophy } from 'lucide-react';
 
 // Types for metrics and records
-type MetricType = 'Weight' | 'Reps' | 'Sets' | 'Time' | 'Distance' | 'Calories' | 'Completion';
+type MetricType = 'Weight' | 'Reps' | 'Sets' | 'Time' | 'Distance' | 'Calories' | 'Completion' | 'Volume';
 type LeaderboardRecord = {
   id: number;
   rank: number;
@@ -47,8 +47,8 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
     } else if (itemType === 'workout') {
       return ['Time', 'Calories', 'Reps'] as MetricType[];
     } else {
-      // Program
-      return ['Calories', 'Time', 'Completion'] as MetricType[];
+      // Program - added Volume for total weight lifted
+      return ['Volume', 'Calories', 'Time', 'Completion'] as MetricType[];
     }
   }, [itemTitle, itemType]);
   
@@ -97,6 +97,11 @@ const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ itemTitle, itemType }) 
       { id: 1, rank: 1, user: { name: 'DedicatedUser' }, value: '100', unit: '%', change: 0 },
       { id: 2, rank: 2, user: { name: 'ConsistentOne' }, value: '95', unit: '%', change: 1 },
       { id: 3, rank: 3, user: { name: 'RegularAthlete' }, value: '90', unit: '%', change: -1 },
+    ],
+    'Volume': [
+      { id: 1, rank: 1, user: { name: 'WeightCrusher' }, value: '28,500', unit: 'lbs', change: 1 },
+      { id: 2, rank: 2, user: { name: 'HeavyLifter' }, value: '24,720', unit: 'lbs', change: 0 },
+      { id: 3, rank: 3, user: { name: 'IronWarrior' }, value: '22,150', unit: 'lbs', change: 2 },
     ],
   };
 
